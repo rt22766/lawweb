@@ -4,6 +4,7 @@ import path from "node:path";
 import type { Step } from "./site";
 
 import { buildWorkspaceAnalysis } from "./analysis";
+import type { PrecedentAnnotation, PrecedentDisputeTag, PrecedentFactTag } from "./precedent-tags";
 import { privateLoanFieldSchema } from "./private-loan-schema";
 import type { CaseOwner, OwnedWorkspaceRecord } from "./workspace-ownership";
 
@@ -61,6 +62,14 @@ export type PrecedentRecommendation = {
   keyDifferenceHints: string[];
 };
 
+export type PrecedentAnnotationTemplate = {
+  factTags: PrecedentFactTag[];
+  disputeTags: PrecedentDisputeTag[];
+  referenceTag: PrecedentAnnotation["referenceTag"];
+  keyIssueTags: string[];
+  templateVersion: "v1";
+};
+
 export type Precedent = {
   id: string;
   title: string;
@@ -75,6 +84,8 @@ export type Precedent = {
   coreFacts: string[];
   reasoningSummary: string[];
   recommendation: PrecedentRecommendation;
+  annotation: PrecedentAnnotation;
+  annotationTemplate: PrecedentAnnotationTemplate;
 };
 
 export type RecommendationBasis = {
@@ -171,6 +182,19 @@ const workspacePrecedents: Precedent[] = [
       matchedIssueStructures: ["借贷关系成立", "还款抗辩审查"],
       keyDifferenceHints: ["现金交付部分支持度较弱", "利息处理需限缩比对"],
     },
+    annotation: {
+      factTags: ["writing_complete", "transfer_complete", "repayment_unmapped"],
+      disputeTags: ["loan_establishment", "repayment_review"],
+      referenceTag: "direct_reference",
+      keyIssueTags: ["written-evidence", "repayment-mapping"],
+    },
+    annotationTemplate: {
+      factTags: ["writing_complete", "transfer_complete", "repayment_unmapped"],
+      disputeTags: ["loan_establishment", "repayment_review"],
+      referenceTag: "direct_reference",
+      keyIssueTags: ["written-evidence", "repayment-mapping"],
+      templateVersion: "v1",
+    },
   },
   {
     id: "precedent-cao-long",
@@ -189,6 +213,19 @@ const workspacePrecedents: Precedent[] = [
       matchingFactTags: ["PARTY_RELATION", "RISK_SCREENING"],
       matchedIssueStructures: ["责任扩展审查", "利息与本金争议"],
       keyDifferenceHints: ["不适合替代还款抗辩路径", "更适合作为责任扩展提醒"],
+    },
+    annotation: {
+      factTags: ["party_joint_liability_dispute", "risk_cash_interest"],
+      disputeTags: ["interest_adjustment", "special_circumstance"],
+      referenceTag: "limited_reference",
+      keyIssueTags: ["spousal-liability", "interest-offset"],
+    },
+    annotationTemplate: {
+      factTags: ["party_joint_liability_dispute", "risk_cash_interest"],
+      disputeTags: ["interest_adjustment", "special_circumstance"],
+      referenceTag: "limited_reference",
+      keyIssueTags: ["spousal-liability", "interest-offset"],
+      templateVersion: "v1",
     },
   },
 ];
@@ -228,9 +265,23 @@ function cloneCaseOwner(owner: CaseOwner): CaseOwner {
   };
 }
 
-function buildDefaultOwnedRecord(owner: CaseOwner, input?: Partial<CaseWorkspaceSummary>): OwnedWorkspaceRecord {
-  const baseFacts = privateLoanFieldSchema.map((fact) => ({ ...fact, options: fact.options ? [...fact.options] : undefined }));
-  const basePrecedents = workspacePrecedents.map((precedent) => ({
+function clonePrecedent(precedent: Precedent): Precedent {
+  const fallbackPrecedent = workspacePrecedents.find((item) => item.id === precedent.id);
+  const annotation = precedent.annotation ?? fallbackPrecedent?.annotation ?? {
+    factTags: [],
+    disputeTags: [],
+    referenceTag: "background_only" as const,
+    keyIssueTags: [],
+  };
+  const annotationTemplate = precedent.annotationTemplate ?? fallbackPrecedent?.annotationTemplate ?? {
+    factTags: [...annotation.factTags],
+    disputeTags: [...annotation.disputeTags],
+    referenceTag: annotation.referenceTag,
+    keyIssueTags: [...annotation.keyIssueTags],
+    templateVersion: "v1" as const,
+  };
+
+  return {
     ...precedent,
     similarities: [...precedent.similarities],
     differences: [...precedent.differences],
@@ -242,7 +293,25 @@ function buildDefaultOwnedRecord(owner: CaseOwner, input?: Partial<CaseWorkspace
       matchedIssueStructures: [...precedent.recommendation.matchedIssueStructures],
       keyDifferenceHints: [...precedent.recommendation.keyDifferenceHints],
     },
-  }));
+    annotation: {
+      factTags: [...annotation.factTags],
+      disputeTags: [...annotation.disputeTags],
+      referenceTag: annotation.referenceTag,
+      keyIssueTags: [...annotation.keyIssueTags],
+    },
+    annotationTemplate: {
+      factTags: [...annotationTemplate.factTags],
+      disputeTags: [...annotationTemplate.disputeTags],
+      referenceTag: annotationTemplate.referenceTag,
+      keyIssueTags: [...annotationTemplate.keyIssueTags],
+      templateVersion: annotationTemplate.templateVersion,
+    },
+  };
+}
+
+function buildDefaultOwnedRecord(owner: CaseOwner, input?: Partial<CaseWorkspaceSummary>): OwnedWorkspaceRecord {
+  const baseFacts = privateLoanFieldSchema.map((fact) => ({ ...fact, options: fact.options ? [...fact.options] : undefined }));
+  const basePrecedents = workspacePrecedents.map(clonePrecedent);
   const analysis = buildWorkspaceAnalysis(baseFacts, basePrecedents);
   const summary: CaseWorkspaceSummary = {
     id: input?.id ?? workspaceSummary.id,
@@ -280,37 +349,13 @@ function cloneWorkspaceRecord(record: OwnedWorkspaceRecord): OwnedWorkspaceRecor
       preliminaryJudgment: { ...record.analysis.preliminaryJudgment },
       coreIssues: [...record.analysis.coreIssues],
       riskHints: [...record.analysis.riskHints],
-      similarCases: record.analysis.similarCases.map((precedent) => ({
-        ...precedent,
-        similarities: [...precedent.similarities],
-        differences: [...precedent.differences],
-        differenceImpact: [...precedent.differenceImpact],
-        coreFacts: [...precedent.coreFacts],
-        reasoningSummary: [...precedent.reasoningSummary],
-        recommendation: {
-          matchingFactTags: [...precedent.recommendation.matchingFactTags],
-          matchedIssueStructures: [...precedent.recommendation.matchedIssueStructures],
-          keyDifferenceHints: [...precedent.recommendation.keyDifferenceHints],
-        },
-      })),
+      similarCases: record.analysis.similarCases.map(clonePrecedent),
       recommendationBasis: record.analysis.recommendationBasis.map((entry) => ({
         precedentId: entry.precedentId,
         reasons: [...entry.reasons],
       })),
     },
-    precedents: record.precedents.map((precedent) => ({
-      ...precedent,
-      similarities: [...precedent.similarities],
-      differences: [...precedent.differences],
-      differenceImpact: [...precedent.differenceImpact],
-      coreFacts: [...precedent.coreFacts],
-      reasoningSummary: [...precedent.reasoningSummary],
-      recommendation: {
-        matchingFactTags: [...precedent.recommendation.matchingFactTags],
-        matchedIssueStructures: [...precedent.recommendation.matchedIssueStructures],
-        keyDifferenceHints: [...precedent.recommendation.keyDifferenceHints],
-      },
-    })),
+    precedents: record.precedents.map(clonePrecedent),
   };
 }
 
@@ -329,37 +374,13 @@ function toWorkspaceRecord(record: OwnedWorkspaceRecord): WorkspaceRecord {
       preliminaryJudgment: { ...record.analysis.preliminaryJudgment },
       coreIssues: [...record.analysis.coreIssues],
       riskHints: [...record.analysis.riskHints],
-      similarCases: record.analysis.similarCases.map((precedent) => ({
-        ...precedent,
-        similarities: [...precedent.similarities],
-        differences: [...precedent.differences],
-        differenceImpact: [...precedent.differenceImpact],
-        coreFacts: [...precedent.coreFacts],
-        reasoningSummary: [...precedent.reasoningSummary],
-        recommendation: {
-          matchingFactTags: [...precedent.recommendation.matchingFactTags],
-          matchedIssueStructures: [...precedent.recommendation.matchedIssueStructures],
-          keyDifferenceHints: [...precedent.recommendation.keyDifferenceHints],
-        },
-      })),
+      similarCases: record.analysis.similarCases.map(clonePrecedent),
       recommendationBasis: record.analysis.recommendationBasis.map((entry) => ({
         precedentId: entry.precedentId,
         reasons: [...entry.reasons],
       })),
     },
-    precedents: record.precedents.map((precedent) => ({
-      ...precedent,
-      similarities: [...precedent.similarities],
-      differences: [...precedent.differences],
-      differenceImpact: [...precedent.differenceImpact],
-      coreFacts: [...precedent.coreFacts],
-      reasoningSummary: [...precedent.reasoningSummary],
-      recommendation: {
-        matchingFactTags: [...precedent.recommendation.matchingFactTags],
-        matchedIssueStructures: [...precedent.recommendation.matchedIssueStructures],
-        keyDifferenceHints: [...precedent.recommendation.keyDifferenceHints],
-      },
-    })),
+    precedents: record.precedents.map(clonePrecedent),
   };
 }
 
@@ -371,33 +392,9 @@ function sanitizeOwnedWorkspaceRecord(record: OwnedWorkspaceRecord): OwnedWorksp
     facts: record.facts.map((fact) => ({ ...fact, options: fact.options ? [...fact.options] : undefined })),
     analysis: buildWorkspaceAnalysis(
       record.facts.map((fact) => ({ ...fact, options: fact.options ? [...fact.options] : undefined })),
-      record.precedents.map((precedent) => ({
-        ...precedent,
-        similarities: [...precedent.similarities],
-        differences: [...precedent.differences],
-        differenceImpact: [...precedent.differenceImpact],
-        coreFacts: [...precedent.coreFacts],
-        reasoningSummary: [...precedent.reasoningSummary],
-        recommendation: {
-          matchingFactTags: [...precedent.recommendation.matchingFactTags],
-          matchedIssueStructures: [...precedent.recommendation.matchedIssueStructures],
-          keyDifferenceHints: [...precedent.recommendation.keyDifferenceHints],
-        },
-      })),
+      record.precedents.map(clonePrecedent),
     ),
-    precedents: record.precedents.map((precedent) => ({
-      ...precedent,
-      similarities: [...precedent.similarities],
-      differences: [...precedent.differences],
-      differenceImpact: [...precedent.differenceImpact],
-      coreFacts: [...precedent.coreFacts],
-      reasoningSummary: [...precedent.reasoningSummary],
-      recommendation: {
-        matchingFactTags: [...precedent.recommendation.matchingFactTags],
-        matchedIssueStructures: [...precedent.recommendation.matchedIssueStructures],
-        keyDifferenceHints: [...precedent.recommendation.keyDifferenceHints],
-      },
-    })),
+    precedents: record.precedents.map(clonePrecedent),
   };
 }
 
@@ -441,33 +438,22 @@ async function writeWorkspaceStore(records: Record<string, OwnedWorkspaceRecord>
 
 
 export function createDemoWorkspaceRepository() {
-  let records: OwnedWorkspaceStore = Object.fromEntries(
-    Object.entries(workspaceRecords).map(([key, value]) => [key, cloneWorkspaceRecord(value)]),
-  );
-  let initialized = false;
-
-  async function ensureRecordsLoaded() {
-    if (initialized) {
-      return;
-    }
-
-    records = await readWorkspaceStore();
-    initialized = true;
+  async function loadLatestRecords() {
+    return readWorkspaceStore();
   }
 
   async function persistRecords(nextRecords: OwnedWorkspaceStore) {
     await writeWorkspaceStore(nextRecords);
-    records = nextRecords;
   }
 
   return {
     async getCase(caseId: string, ownerUserId?: string) {
-      await ensureRecordsLoaded();
+      const records = await loadLatestRecords();
       const record = getOwnedWorkspaceRecord(records, caseId, ownerUserId);
       return record ? toWorkspaceRecord(record) : null;
     },
     async createCase(input: CreateWorkspaceInput) {
-      await ensureRecordsLoaded();
+      const records = await loadLatestRecords();
       const nextId = `loan-case-${Object.keys(records).length + 1}`;
       const nextRecord = buildDefaultOwnedRecord(input.owner, {
         id: nextId,
@@ -483,7 +469,7 @@ export function createDemoWorkspaceRepository() {
       return toWorkspaceRecord(nextRecord);
     },
     async updateFacts(caseId: string, updates: FactUpdateInput[], ownerUserId?: string) {
-      await ensureRecordsLoaded();
+      const records = await loadLatestRecords();
       const current = getOwnedWorkspaceRecord(records, caseId, ownerUserId);
 
       if (!current) {
@@ -522,7 +508,7 @@ export function createDemoWorkspaceRepository() {
       return toWorkspaceRecord(nextRecord);
     },
     async saveAnalysisResult(caseId: string, analysis: WorkspaceAnalysis, ownerUserId?: string) {
-      await ensureRecordsLoaded();
+      const records = await loadLatestRecords();
       const current = getOwnedWorkspaceRecord(records, caseId, ownerUserId);
 
       if (!current) {
@@ -541,19 +527,7 @@ export function createDemoWorkspaceRepository() {
           preliminaryJudgment: { ...analysis.preliminaryJudgment },
           coreIssues: [...analysis.coreIssues],
           riskHints: [...analysis.riskHints],
-          similarCases: analysis.similarCases.map((precedent) => ({
-            ...precedent,
-            similarities: [...precedent.similarities],
-            differences: [...precedent.differences],
-            differenceImpact: [...precedent.differenceImpact],
-            coreFacts: [...precedent.coreFacts],
-            reasoningSummary: [...precedent.reasoningSummary],
-            recommendation: {
-              matchingFactTags: [...precedent.recommendation.matchingFactTags],
-              matchedIssueStructures: [...precedent.recommendation.matchedIssueStructures],
-              keyDifferenceHints: [...precedent.recommendation.keyDifferenceHints],
-            },
-          })),
+          similarCases: analysis.similarCases.map(clonePrecedent),
           recommendationBasis: analysis.recommendationBasis.map((entry) => ({
             precedentId: entry.precedentId,
             reasons: [...entry.reasons],

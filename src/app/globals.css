@@ -1654,11 +1654,67 @@ main {
 
 .result-list,
 .result-rule-list,
+.result-trace-list,
 .result-risk-groups,
 .result-precedent-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.result-trace-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result-trace-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.result-trace-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.result-trace-slot-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+
+.result-trace-slot-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink-strong);
+}
+
+.result-trace-slot-summary::-webkit-details-marker {
+  display: none;
+}
+
+.result-trace-slot-group[open] .result-trace-slot-summary {
+  border-bottom: 1px dashed var(--border);
+}
+
+.result-trace-slot-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 12px 12px;
 }
 
 .result-list {
