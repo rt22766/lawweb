@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useActionState } from 'react';
 import type { ComponentProps } from 'react';
 
-import { loginAction } from '@/lib/auth-server-actions';
+import { loginAction } from '../../lib/auth-server-actions';
 
 function AuthField(props: ComponentProps<'input'> & { label: string }) {
   const { label, ...inputProps } = props;

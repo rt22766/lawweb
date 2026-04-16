@@ -1,4 +1,4 @@
-import type { FactOption, FactStatus, SourceType } from "@/lib/demo-repository";
+import type { FactOption, FactStatus, SourceType } from "./demo-repository";
 
 export type FactInputType = "text" | "textarea" | "single-select" | "number" | "date";
 

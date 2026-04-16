@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 
-import { RoleGate } from "@/components/auth/role-gate";
-import { AnalysisSummaryPanel } from "@/components/workspace/analysis-summary-panel";
-import { CaseWorkspaceFrame } from "@/components/workspace/case-workspace-frame";
-import { requireSession } from "@/lib/auth-session";
-import { getCaseWorkspace } from "@/lib/case-workspace";
+import { RoleGate } from "../../../../components/auth/role-gate";
+import { AnalysisSummaryPanel } from "../../../../components/workspace/analysis-summary-panel";
+import { CaseWorkspaceFrame } from "../../../../components/workspace/case-workspace-frame";
+import { requireSession } from "../../../../lib/auth-session";
+import { getCaseWorkspace } from "../../../../lib/case-workspace";
 
 type ResultPageProps = {
   params: Promise<{ caseId: string }>;

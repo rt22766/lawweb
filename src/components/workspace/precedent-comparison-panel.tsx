@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import type { Precedent, RecommendationBasis } from "@/lib/demo-repository";
+import type { Precedent, RecommendationBasis } from "../../lib/demo-repository";
 
 type PrecedentComparisonPanelProps = {
   caseId: string;

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import type { WorkspaceAnalysis } from "@/lib/demo-repository";
-import type { PrivateLoanRuleTrace } from "@/lib/rules/private-loan/types";
+import type { WorkspaceAnalysis } from "../../lib/demo-repository";
+import type { PrivateLoanRuleTrace } from "../../lib/rules/private-loan/types";
 
 type AnalysisWithTrace = WorkspaceAnalysis & {
   traceId?: string;

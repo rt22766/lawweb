@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { getCurrentSession, requireRole } from '@/lib/auth-session';
-import type { UserRole } from '@/lib/auth-types';
+import { getCurrentSession, requireRole } from '../../lib/auth-session';
+import type { UserRole } from '../../lib/auth-types';
 
 type RoleGateProps = {
   allow: UserRole[];

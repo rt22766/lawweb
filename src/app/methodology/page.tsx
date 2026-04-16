@@ -1,5 +1,5 @@
-import { SectionShell } from "@/components/site/section-shell";
-import { methodologySteps, trustItems } from "@/lib/site";
+import { SectionShell } from "../../components/site/section-shell";
+import { methodologySteps, trustItems } from "../../lib/site";
 
 export const metadata = {
   title: "方法论",

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { getCurrentSession } from "@/lib/auth-session";
-import { siteConfig } from "@/lib/site";
+import { getCurrentSession } from "../../lib/auth-session";
+import { siteConfig } from "../../lib/site";
 
 export async function SiteHeader() {
   const session = await getCurrentSession();

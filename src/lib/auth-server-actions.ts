@@ -1,6 +1,6 @@
 "use server";
 
-import type { AuthSession, LoginInput, RegistrationInput, UserRole } from '@/lib/auth-types';
+import type { AuthSession, LoginInput, RegistrationInput, UserRole } from './auth-types';
 import {
   authRepository,
   createSessionCookieValue,
@@ -9,9 +9,9 @@ import {
   parseSessionCookieValue,
   validateLoginInput,
   validateRegistrationInput,
-} from '@/lib/auth-repository';
-import { buildCaseOwnerInput } from '@/lib/case-workspace';
-import { createDemoWorkspaceRepository, listWorkspaceCases } from '@/lib/demo-repository';
+} from './auth-repository';
+import { buildCaseOwnerInput } from './case-workspace';
+import { createDemoWorkspaceRepository, listWorkspaceCases } from './demo-repository';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 

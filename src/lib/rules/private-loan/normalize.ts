@@ -1,4 +1,4 @@
-import type { FactField } from "@/lib/demo-repository";
+import type { FactField } from "../../demo-repository";
 
 import type { NormalizedPrivateLoanFacts, PrivateLoanDerivedSignal } from "./types";
 

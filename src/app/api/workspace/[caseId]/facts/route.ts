@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
-import { getCurrentSession } from '@/lib/auth-session';
-import { createDemoWorkspaceRepository } from '@/lib/demo-repository';
+import { getCurrentSession } from '../../../../../lib/auth-session';
+import { createDemoWorkspaceRepository } from '../../../../../lib/demo-repository';
 
 const repository = createDemoWorkspaceRepository();
 

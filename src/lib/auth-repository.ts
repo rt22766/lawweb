@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import type { AuthSession, LoginInput, RegistrationInput, UserAccount, UserRole } from '@/lib/auth-types';
+import type { AuthSession, LoginInput, RegistrationInput, UserAccount, UserRole } from './auth-types';
 
 const SESSION_COOKIE_NAME = 'factflow_session';
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

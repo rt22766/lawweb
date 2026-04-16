@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
-import type { AuthSession } from "@/lib/auth-types";
-import type { CaseWorkspaceSummary } from "@/lib/demo-repository";
-import type { Step } from "@/lib/site";
+import type { AuthSession } from "../../lib/auth-types";
+import type { CaseWorkspaceSummary } from "../../lib/demo-repository";
+import type { Step } from "../../lib/site";
 
 type WorkspaceShellProps = {
   summary: CaseWorkspaceSummary;

@@ -1,5 +1,5 @@
-import type { UserRole } from '@/lib/auth-types';
-import type { WorkspaceRecord } from '@/lib/demo-repository';
+import type { UserRole } from './auth-types';
+import type { WorkspaceRecord } from './demo-repository';
 
 export type CaseOwner = {
   userId: string;

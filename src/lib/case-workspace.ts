@@ -1,5 +1,5 @@
-import { getWorkspaceRecord, getWorkspaceRecordSync } from "@/lib/demo-repository";
-import type { UserRole } from "@/lib/auth-types";
+import { getWorkspaceRecord, getWorkspaceRecordSync } from "./demo-repository";
+import type { UserRole } from "./auth-types";
 
 export async function getCaseWorkspace(caseId?: string, ownerUserId?: string) {
   return getWorkspaceRecord(caseId ?? "loan-case-001", ownerUserId);

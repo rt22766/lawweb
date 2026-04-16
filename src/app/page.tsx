@@ -1,14 +1,14 @@
 import Link from "next/link";
 
-import { SectionShell } from "@/components/site/section-shell";
-import { FactMatrix } from "@/components/site/fact-matrix";
-import { RuleTraceability } from "@/components/site/rule-traceability";
+import { SectionShell } from "../components/site/section-shell";
+import { FactMatrix } from "../components/site/fact-matrix";
+import { RuleTraceability } from "../components/site/rule-traceability";
 import {
   homepageFeatures,
   homepageMetrics,
   methodologySteps,
   trustProofs,
-} from "@/lib/site";
+} from "../lib/site";
 
 export default function HomePage() {
   return (

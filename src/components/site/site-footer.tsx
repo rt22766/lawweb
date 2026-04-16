@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "../../lib/site";
 
 export function SiteFooter() {
   return (

@@ -1,5 +1,5 @@
-import { SectionShell } from "@/components/site/section-shell";
-import { homepageFeatures } from "@/lib/site";
+import { SectionShell } from "../../components/site/section-shell";
+import { homepageFeatures } from "../../lib/site";
 import Link from "next/link";
 
 const solutionGroups = [

@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import { createWorkspaceCaseAction } from "@/lib/auth-server-actions";
-import { requireSession } from "@/lib/auth-session";
-import { listWorkspaceCases } from "@/lib/demo-repository";
+import { createWorkspaceCaseAction } from "../../lib/auth-server-actions";
+import { requireSession } from "../../lib/auth-session";
+import { listWorkspaceCases } from "../../lib/demo-repository";
 
 export default async function WorkspaceIndexPage() {
   const session = await requireSession();

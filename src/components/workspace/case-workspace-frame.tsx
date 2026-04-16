@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-import type { AuthSession } from "@/lib/auth-types";
-import type { WorkspaceRecord } from "@/lib/demo-repository";
-import { WorkspaceShell } from "@/components/workspace/workspace-shell";
+import type { AuthSession } from "../../lib/auth-types";
+import type { WorkspaceRecord } from "../../lib/demo-repository";
+import { WorkspaceShell } from "./workspace-shell";
 
 type CaseWorkspaceFrameProps = {
   caseId: string;

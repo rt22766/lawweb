@@ -1,4 +1,4 @@
-import type { FactField, Precedent, RuleHit, WorkspaceAnalysis } from "@/lib/demo-repository";
+import type { FactField, Precedent, RuleHit, WorkspaceAnalysis } from "../../demo-repository";
 
 import { privateLoanConflictMatrix } from "./dictionaries";
 import { normalizePrivateLoanFacts } from "./normalize";

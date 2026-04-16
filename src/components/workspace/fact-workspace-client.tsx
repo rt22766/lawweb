@@ -2,8 +2,8 @@
 
 import { useMemo, useState, useTransition } from "react";
 
-import { buildWorkspaceAnalysis } from "@/lib/analysis";
-import type { FactField, FactStatus, Precedent, WorkspaceAnalysis } from "@/lib/demo-repository";
+import { buildWorkspaceAnalysis } from "../../lib/analysis";
+import type { FactField, FactStatus, Precedent, WorkspaceAnalysis } from "../../lib/demo-repository";
 
 const groupTitles: Record<FactField["groupCode"], string> = {
   A: "A 主体与关系事实",

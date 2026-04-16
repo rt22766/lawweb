@@ -1,5 +1,5 @@
-import type { AuthSession, UserRole } from '@/lib/auth-types';
-import { getRoleHomePath, getSessionCookieName, parseSessionCookieValue } from '@/lib/auth-repository';
+import type { AuthSession, UserRole } from './auth-types';
+import { getRoleHomePath, getSessionCookieName, parseSessionCookieValue } from './auth-repository';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 

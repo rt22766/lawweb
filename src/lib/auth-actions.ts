@@ -1,11 +1,11 @@
-import type { AuthSession, LoginInput, RegistrationInput, UserRole } from '@/lib/auth-types';
+import type { AuthSession, LoginInput, RegistrationInput, UserRole } from './auth-types';
 import {
   authRepository,
   createSessionCookieValue,
   getSessionCookieName,
   validateLoginInput,
   validateRegistrationInput,
-} from '@/lib/auth-repository';
+} from './auth-repository';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 

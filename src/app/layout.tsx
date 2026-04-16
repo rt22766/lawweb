@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-import { SiteFooter } from "@/components/site/site-footer";
-import { SiteHeader } from "@/components/site/site-header";
-import { siteConfig } from "@/lib/site";
+import { SiteFooter } from "../components/site/site-footer";
+import { SiteHeader } from "../components/site/site-header";
+import { siteConfig } from "../lib/site";
 
 import "./globals.css";
 

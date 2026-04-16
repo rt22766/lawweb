@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 
-import { RoleGate } from "@/components/auth/role-gate";
-import { CaseWorkspaceFrame } from "@/components/workspace/case-workspace-frame";
-import { PrecedentComparisonPanel } from "@/components/workspace/precedent-comparison-panel";
-import { requireSession } from "@/lib/auth-session";
-import { getCaseWorkspace } from "@/lib/case-workspace";
+import { RoleGate } from "../../../../../components/auth/role-gate";
+import { CaseWorkspaceFrame } from "../../../../../components/workspace/case-workspace-frame";
+import { PrecedentComparisonPanel } from "../../../../../components/workspace/precedent-comparison-panel";
+import { requireSession } from "../../../../../lib/auth-session";
+import { getCaseWorkspace } from "../../../../../lib/case-workspace";
 
 type PrecedentDetailPageProps = {
   params: Promise<{ caseId: string; precedentId: string }>;
