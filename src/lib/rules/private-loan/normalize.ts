@@ -50,6 +50,16 @@ export function normalizePrivateLoanFacts(facts: FactField[]): NormalizedPrivate
     }
   });
 
+  // 风险字段拆分为可并存信号后，risk_none 仅在无风险信号时保留。
+  if (derivedSignals.has("risk_cash_interest") || derivedSignals.has("risk_relationship_mixing")) {
+    derivedSignals.delete("risk_none");
+  } else if (
+    selectedValuesByTag.RISK_SCREENING === "risk_none" ||
+    selectedValuesByTag.RELATIONSHIP_MIXING_RISK === "risk_none"
+  ) {
+    derivedSignals.add("risk_none");
+  }
+
   return {
     appliedFactTags,
     selectedLabelsByTag,

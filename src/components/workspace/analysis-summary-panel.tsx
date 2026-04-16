@@ -1,10 +1,16 @@
 import Link from "next/link";
 
 import type { WorkspaceAnalysis } from "@/lib/demo-repository";
+import type { PrivateLoanRuleTrace } from "@/lib/rules/private-loan/types";
+
+type AnalysisWithTrace = WorkspaceAnalysis & {
+  traceId?: string;
+  trace?: PrivateLoanRuleTrace[];
+};
 
 type AnalysisSummaryPanelProps = {
   caseId: string;
-  analysis: WorkspaceAnalysis;
+  analysis: AnalysisWithTrace;
 };
 
 const severityLabelMap = {
@@ -50,6 +56,12 @@ export function AnalysisSummaryPanel({ caseId, analysis }: AnalysisSummaryPanelP
             <span className="card-eyebrow">优先动作</span>
             <p>{analysis.actionSuggestions[0] ?? "继续核验关键事实与证据链。"}</p>
           </div>
+          {analysis.traceId ? (
+            <div className="result-callout">
+              <span className="card-eyebrow">规则追踪</span>
+              <p>{analysis.traceId}</p>
+            </div>
+          ) : null}
         </article>
 
         <article className="result-card">
@@ -85,6 +97,12 @@ export function AnalysisSummaryPanel({ caseId, analysis }: AnalysisSummaryPanelP
                       ))}
                     </ul>
                   </>
+                ) : null}
+                {analysis.trace ? (
+                  <small>
+                    追踪：
+                    {analysis.trace.find((entry: PrivateLoanRuleTrace) => entry.ruleId === rule.id)?.reason ?? '命中当前事实组合'}
+                  </small>
                 ) : null}
               </article>
             ))}

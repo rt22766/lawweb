@@ -54,6 +54,7 @@ export type PrivateLoanRuleTrace = {
   slot: PrivateLoanRuleSlot;
   priority: number;
   because: string[];
+  reason: string;
 };
 
 export type PrivateLoanRuleOutput = {
@@ -65,6 +66,8 @@ export type PrivateLoanRuleOutput = {
     legalBasis: string;
     because: string[];
   };
+  traceBecause?: string[];
+  traceReason?: string;
   preliminaryJudgment?: {
     label: string;
     summary: string;

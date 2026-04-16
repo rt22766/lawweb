@@ -23,13 +23,14 @@ function buildRecommendationBasis(precedents: Precedent[], disputePattern: strin
 function mergeBySlot(slot: PrivateLoanRuleSlot, current: PrivateLoanRuleOutput, incoming: PrivateLoanRuleOutput) {
   const strategy = privateLoanConflictMatrix[slot];
 
-  if (strategy === "highest_priority_wins") {
-    return current.preliminaryJudgment ? current : incoming;
-  }
-
   return {
-    preliminaryJudgment: current.preliminaryJudgment ?? incoming.preliminaryJudgment,
+    preliminaryJudgment:
+      strategy === 'highest_priority_wins'
+        ? current.preliminaryJudgment ?? incoming.preliminaryJudgment
+        : incoming.preliminaryJudgment ?? current.preliminaryJudgment,
     ruleHit: incoming.ruleHit ?? current.ruleHit,
+    traceBecause: incoming.traceBecause ?? current.traceBecause,
+    traceReason: incoming.traceReason ?? current.traceReason,
     coreIssues: [...(current.coreIssues ?? []), ...(incoming.coreIssues ?? [])],
     riskHints: [...(current.riskHints ?? []), ...(incoming.riskHints ?? [])],
     evidenceGaps: [...(current.evidenceGaps ?? []), ...(incoming.evidenceGaps ?? [])],
@@ -57,6 +58,7 @@ export function runPrivateLoanRules(facts: FactField[], precedents: Precedent[])
     slot: rule.slot,
     priority: rule.priority,
     because: [],
+    reason: '未命中当前事实组合',
   }));
 
   matchedRules.forEach((rule) => {
@@ -69,7 +71,8 @@ export function runPrivateLoanRules(facts: FactField[], precedents: Precedent[])
 
     const traceEntry = trace.find((item) => item.ruleId === rule.id);
     if (traceEntry) {
-      traceEntry.because = result.ruleHit?.because ?? [];
+      traceEntry.because = result.traceBecause ?? result.ruleHit?.because ?? [];
+      traceEntry.reason = result.traceReason ?? '命中当前事实组合';
     }
   });
 

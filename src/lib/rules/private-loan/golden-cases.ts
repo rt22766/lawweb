@@ -30,9 +30,11 @@ export function createGoldenCases(baseFacts: FactField[]): GoldenCaseFixture[] {
       facts: applyOverrides(baseFacts, {
         LOAN_INTENT_WRITING: { value: 'writing_complete', status: '已确认' },
         FUND_DELIVERY_TRANSFER: { value: 'transfer_complete', status: '已确认' },
-        REPAYMENT_DEFENSE: { value: 'repayment_unmapped', status: '存在冲突' },
+        REPAYMENT_DEFENSE: { value: 'repayment_none', status: '已确认' },
+        RISK_SCREENING: { value: 'risk_none', status: '待核实' },
+        RELATIONSHIP_MIXING_RISK: { value: 'risk_none', status: '待核实' },
       }),
-      expectedRuleIds: ['R1', 'R6', 'R7', 'R9'],
+      expectedRuleIds: ['R1', 'R6'],
       expectedJudgment: '借贷关系初步成立',
     },
     {
@@ -43,8 +45,9 @@ export function createGoldenCases(baseFacts: FactField[]): GoldenCaseFixture[] {
         FUND_DELIVERY_TRANSFER: { value: 'transfer_complete', status: '已确认' },
         REPAYMENT_DEFENSE: { value: 'repayment_mapped', status: '待核实' },
         RISK_SCREENING: { value: 'risk_none', status: '待核实' },
+        RELATIONSHIP_MIXING_RISK: { value: 'risk_none', status: '待核实' },
       }),
-      expectedRuleIds: ['R2', 'R6', 'R8'],
+      expectedRuleIds: ['R2', 'R6'],
       expectedJudgment: '举证责任转向被告说明转账性质',
     },
     {
@@ -53,10 +56,11 @@ export function createGoldenCases(baseFacts: FactField[]): GoldenCaseFixture[] {
       facts: applyOverrides(baseFacts, {
         LOAN_INTENT_WRITING: { value: 'writing_none', status: '证据不足' },
         FUND_DELIVERY_TRANSFER: { value: 'transfer_complete', status: '已确认' },
-        REPAYMENT_DEFENSE: { value: 'repayment_unmapped', status: '存在冲突' },
-        RISK_SCREENING: { value: 'risk_relationship_mixing', status: '已确认' },
+        REPAYMENT_DEFENSE: { value: 'defendant_goods', status: '存在冲突' },
+        RISK_SCREENING: { value: 'risk_none', status: '待核实' },
+        RELATIONSHIP_MIXING_RISK: { value: 'risk_relationship_mixing', status: '已确认' },
       }),
-      expectedRuleIds: ['R2', 'R4', 'R5', 'R6', 'R7', 'R9'],
+      expectedRuleIds: ['R2', 'R4', 'R5', 'R6'],
       expectedJudgment: '转账性质真伪不明，需补强证据',
     },
   ];
